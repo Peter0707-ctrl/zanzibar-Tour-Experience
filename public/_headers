@@ -1,0 +1,21 @@
+/*
+  # Enforce HTTPS with HSTS (1 year + subdomains + preload)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  
+  # Prevent Clickjacking by disallowing embedding in iframes
+  X-Frame-Options: SAMEORIGIN
+  
+  # Prevent MIME-type sniffing
+  X-Content-Type-Options: nosniff
+  
+  # Protect referrer data across domains
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+  # Restrict unauthorized browser features
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+  
+  # Content Security Policy (XSS & Injection Protection)
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://images.unsplash.com https://*.unsplash.com blob:; media-src 'self' blob:; connect-src 'self' https://api.whatsapp.com https://wa.me; frame-ancestors 'self';
+  
+  # Cache optimization for static assets
+  Cache-Control: public, max-age=31536000, immutable
