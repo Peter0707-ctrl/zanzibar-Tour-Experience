@@ -1,18 +1,43 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, AlertCircle, Copy, Check, ExternalLink } from 'lucide-react';
 
 interface FooterProps {
   onOpenBooking?: () => void;
   onNavigateJournal?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigateJournal }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenBooking, onNavigateJournal }) => {
   const [emailInput, setEmailInput] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyEmail = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard.writeText('sweetbertmacha500@gmail.com');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!emailInput.trim()) return;
+    const trimmed = emailInput.trim();
+
+    if (!trimmed) {
+      setErrorMessage('Tafadhali ingiza barua pepe yako (Please enter your email)');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) {
+      setErrorMessage('Tafadhali weka barua pepe sahihi (mfano: jina@gmail.com)');
+      return;
+    }
+
+    setErrorMessage('');
+    setIsSubmitting(true);
 
     try {
       await fetch('https://formsubmit.co/ajax/sweetbertmacha500@gmail.com', {
@@ -23,7 +48,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateJournal }) => {
         },
         body: JSON.stringify({
           _subject: 'New Zanzibar Travel Journal Subscriber',
-          subscriberEmail: emailInput.trim(),
+          subscriberEmail: trimmed,
           submittedAt: new Date().toLocaleString(),
           _template: 'box',
         }),
@@ -32,6 +57,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateJournal }) => {
       // Silently handle offline/network issues
     }
 
+    setIsSubmitting(false);
     setNewsletterSubscribed(true);
   };
 
@@ -162,10 +188,46 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateJournal }) => {
                   +255 692 590 012
                 </a>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Mail className="w-4 h-4 text-[#F5D08A] shrink-0" />
-                <a href="mailto:sweetbertmacha500@gmail.com" className="hover:text-white transition-colors">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onOpenBooking) {
+                      onOpenBooking();
+                    } else {
+                      window.location.href = 'mailto:sweetbertmacha500@gmail.com';
+                    }
+                  }}
+                  className="hover:text-[#F5D08A] transition-colors cursor-pointer text-left font-medium underline decoration-transparent hover:decoration-[#F5D08A]/60 underline-offset-2"
+                  title="Click to write inquiry directly"
+                >
                   sweetbertmacha500@gmail.com
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="p-1 rounded-md text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-1"
+                  title="Copy email address"
+                  aria-label="Copy email address"
+                >
+                  {copied ? (
+                    <span className="flex items-center gap-1 text-[10px] text-emerald-300 font-medium bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-500/50 shadow-xs">
+                      <Check className="w-2.5 h-2.5" /> Copied!
+                    </span>
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                </button>
+                <a
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=sweetbertmacha500@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="Open directly in Gmail"
+                  aria-label="Open in Gmail"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
             </div>
@@ -176,26 +238,48 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateJournal }) => {
                 Zanzibar Travel Journal
               </div>
               {newsletterSubscribed ? (
-                <div className="text-xs text-emerald-300 bg-emerald-950/80 border border-emerald-500/60 p-2.5 rounded-lg shadow-md">
-                  ✓ Asante! You are subscribed to our seasonal updates.
+                <div className="text-xs text-emerald-300 bg-emerald-950/80 border border-emerald-500/60 p-2.5 rounded-lg shadow-md animate-fadeIn flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Asante sana! You are subscribed to our seasonal updates.</span>
                 </div>
               ) : (
-                <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    className="w-full bg-black/50 border border-white/30 rounded-lg px-3 py-2 text-xs text-white placeholder-white/60 focus:outline-none focus:border-white shadow-inner"
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="px-3.5 py-2 bg-[#44534C] hover:bg-[#35423C] text-white rounded-lg text-xs font-medium transition-colors cursor-pointer border border-white/30 shadow-md"
-                    aria-label="Subscribe"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                  </button>
+                <form onSubmit={handleNewsletterSubmit} noValidate className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter your email address"
+                      value={emailInput}
+                      onChange={(e) => {
+                        setEmailInput(e.target.value);
+                        if (errorMessage) setErrorMessage('');
+                      }}
+                      className={`w-full bg-black/50 border rounded-lg px-3 py-2 text-xs text-white placeholder-white/50 focus:outline-none transition-all shadow-inner ${
+                        errorMessage
+                          ? 'border-amber-400/90 ring-1 ring-amber-400/40'
+                          : 'border-white/30 focus:border-white'
+                      }`}
+                    />
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="px-3.5 py-2 bg-[#44534C] hover:bg-[#35423C] disabled:opacity-60 text-white rounded-lg text-xs font-medium transition-colors cursor-pointer border border-white/30 shadow-md flex items-center justify-center shrink-0"
+                      aria-label="Subscribe"
+                    >
+                      {isSubmitting ? (
+                        <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <Send className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Elegant In-Website Polite Message (No Native Browser Popup!) */}
+                  {errorMessage && (
+                    <div className="flex items-center gap-1.5 text-[11px] text-amber-200 bg-amber-950/80 border border-amber-500/40 px-2.5 py-1.5 rounded-lg shadow-sm animate-fadeIn">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0 text-amber-300" />
+                      <span>{errorMessage}</span>
+                    </div>
+                  )}
                 </form>
               )}
             </div>
