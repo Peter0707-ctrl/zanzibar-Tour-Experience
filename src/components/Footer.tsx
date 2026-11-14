@@ -1,25 +1,16 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send, AlertCircle, Copy, Check, ExternalLink } from 'lucide-react';
+import { Phone, MapPin, Send, AlertCircle, Check } from 'lucide-react';
 
 interface FooterProps {
   onOpenBooking?: () => void;
   onNavigateJournal?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenBooking, onNavigateJournal }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigateJournal }) => {
   const [emailInput, setEmailInput] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [copied, setCopied] = useState(false);
-
-  const handleCopyEmail = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    navigator.clipboard.writeText('sweetbertmacha500@gmail.com');
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,48 +177,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenBooking, onNavigateJournal
                 <Phone className="w-4 h-4 text-[#F5D08A] shrink-0" />
                 <a href="tel:+255692590012" className="hover:text-white transition-colors font-medium">
                   +255 692 590 012
-                </a>
-              </div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <Mail className="w-4 h-4 text-[#F5D08A] shrink-0" />
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (onOpenBooking) {
-                      onOpenBooking();
-                    } else {
-                      window.location.href = 'mailto:sweetbertmacha500@gmail.com';
-                    }
-                  }}
-                  className="hover:text-[#F5D08A] transition-colors cursor-pointer text-left font-medium underline decoration-transparent hover:decoration-[#F5D08A]/60 underline-offset-2"
-                  title="Click to write inquiry directly"
-                >
-                  sweetbertmacha500@gmail.com
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCopyEmail}
-                  className="p-1 rounded-md text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer flex items-center gap-1"
-                  title="Copy email address"
-                  aria-label="Copy email address"
-                >
-                  {copied ? (
-                    <span className="flex items-center gap-1 text-[10px] text-emerald-300 font-medium bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-500/50 shadow-xs">
-                      <Check className="w-2.5 h-2.5" /> Copied!
-                    </span>
-                  ) : (
-                    <Copy className="w-3.5 h-3.5" />
-                  )}
-                </button>
-                <a
-                  href="https://mail.google.com/mail/?view=cm&fs=1&to=sweetbertmacha500@gmail.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                  title="Open directly in Gmail"
-                  aria-label="Open in Gmail"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
             </div>
