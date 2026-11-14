@@ -59,20 +59,20 @@ export const TestimonialsSection: React.FC = () => {
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Section Header - Lala Salama Style */}
-        <div className="text-center mb-8 md:mb-12">
-          <span className="font-signature text-3xl sm:text-4xl text-[#44534C] block mb-1">
+        <div className="text-center mb-7 md:mb-10">
+          <span className="font-signature text-2xl sm:text-3xl text-[#44534C] block mb-0.5">
             Guest Impressions
           </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-gray-900 font-bold tracking-tight mb-3">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-serif text-gray-900 font-bold tracking-tight mb-2.5">
             Words from Our Discerning Guests
           </h2>
-          <div className="w-12 h-[1.5px] bg-[#44534C]/40 mx-auto" />
+          <div className="w-10 h-[1.5px] bg-[#44534C]/40 mx-auto" />
         </div>
 
         {/* Pure Editorial Quote Stage (ZERO FORMS / ZERO BOXES) */}
-        <div className="relative min-h-[280px] sm:min-h-[250px] md:min-h-[230px] flex flex-col justify-center items-center text-center px-4 sm:px-12 md:px-16">
-          {/* Big Editorial Quote Mark */}
-          <div className="text-6xl sm:text-7xl md:text-8xl font-serif text-[#C5A880]/40 leading-none select-none mb-2">
+        <div className="relative min-h-[220px] sm:min-h-[200px] md:min-h-[190px] flex flex-col justify-center items-center text-center px-4 sm:px-10 md:px-14">
+          {/* Subtle Editorial Quote Mark */}
+          <div className="text-4xl sm:text-5xl md:text-6xl font-serif text-[#C5A880]/35 leading-none select-none mb-1">
             “
           </div>
 
@@ -81,36 +81,36 @@ export const TestimonialsSection: React.FC = () => {
             key={activeReview.id}
             className="transition-all duration-500 ease-out transform translate-y-0 opacity-100 animate-fadeIn"
           >
-            {/* The Quote */}
-            <p className="font-serif text-lg sm:text-xl md:text-2xl lg:text-[26px] text-gray-900 leading-relaxed italic font-normal max-w-3xl mx-auto mb-6">
+            {/* The Quote (Refined, perfectly balanced luxury font size) */}
+            <p className="font-serif text-base sm:text-lg md:text-xl lg:text-[20px] text-gray-800 leading-relaxed italic font-normal max-w-2xl mx-auto mb-5">
               {activeReview.comment}
             </p>
 
             {/* Experience Tag */}
-            <div className="inline-block text-[11px] font-sans font-medium uppercase tracking-[0.2em] text-[#44534C] mb-4">
+            <div className="inline-block text-[10px] sm:text-[11px] font-sans font-medium uppercase tracking-[0.2em] text-[#44534C] mb-3">
               {activeReview.tour}
             </div>
 
             {/* Reviewer Attribution */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5">
               <div className="relative">
                 <img
                   src={activeReview.avatar}
                   alt={activeReview.name}
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-2 ring-[#44534C]/25 ring-offset-2 ring-offset-[#FAF8F5] shadow-sm"
+                  className="w-13 h-13 sm:w-15 sm:h-15 rounded-full object-cover ring-2 ring-[#44534C]/25 ring-offset-2 ring-offset-[#FAF8F5] shadow-sm"
                 />
               </div>
 
               <div className="text-center sm:text-left">
                 <div className="flex items-center justify-center sm:justify-start gap-1.5">
-                  <h3 className="font-serif font-bold text-base sm:text-lg text-gray-950 tracking-tight">
+                  <h3 className="font-serif font-bold text-sm sm:text-base text-gray-950 tracking-tight">
                     {activeReview.name}
                   </h3>
                   <span title="Verified Traveler" className="inline-flex text-[#44534C]">
-                    <CheckCircle2 className="w-4 h-4 shrink-0 fill-[#44534C]/10" />
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0 fill-[#44534C]/10" />
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 font-light flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
+                <p className="text-[11px] sm:text-xs text-gray-500 font-light flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
                   <span className="font-medium text-gray-700">{activeReview.country}</span>
                   <span>•</span>
                   <span>{activeReview.date}</span>
