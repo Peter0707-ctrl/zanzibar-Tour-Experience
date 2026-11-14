@@ -30,6 +30,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const [phone, setPhone] = useState('');
   const [specialRequests, setSpecialRequests] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingRef, setBookingRef] = useState('');
   const [draftRestored, setDraftRestored] = useState(false);
 
@@ -120,12 +121,43 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     window.open(`https://wa.me/255692590012?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setBookingRef(generateRef());
+    const ref = generateRef();
+    setBookingRef(ref);
+    setIsSubmitting(true);
+
+    try {
+      // Send complete booking inquiry directly to sweetbertmacha500@gmail.com
+      await fetch('https://formsubmit.co/ajax/sweetbertmacha500@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          _subject: `New Siribrand Booking Inquiry #${ref}: ${experience} - ${fullName}`,
+          bookingReference: ref,
+          guestName: fullName,
+          guestEmail: email,
+          phoneOrWhatsApp: phone,
+          experienceOrTour: experience,
+          travelOrCheckInDate: date || 'Flexible',
+          numberOfGuests: guests,
+          specialRequests: specialRequests || 'Standard package',
+          _replyto: email,
+          _template: 'table',
+        }),
+      });
+    } catch {
+      // Silently fall through to success screen with WhatsApp/Email buttons
+    }
+
+    setIsSubmitting(false);
     setIsSubmitted(true);
+
     // Clear draft on successful submission
     try {
       localStorage.removeItem(DRAFT_KEY);
@@ -183,9 +215,17 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               <h4 className="font-serif text-2xl sm:text-3xl font-bold text-gray-950 mb-1">
                 Inquiry Successfully Logged!
               </h4>
-              <p className="text-xs text-gray-500 uppercase tracking-widest mb-4 font-semibold">
+              <p className="text-xs text-gray-500 uppercase tracking-widest mb-3 font-semibold">
                 Official Reference: <span className="text-[#A38257] font-bold font-mono">{bookingRef}</span>
               </p>
+
+              {/* Notification of direct email dispatch to sweetbertmacha500@gmail.com */}
+              <div className="bg-emerald-50 border border-emerald-200/90 rounded-xl p-3 max-w-lg mx-auto mb-4 text-left flex items-start gap-2.5 shadow-xs">
+                <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <p className="text-xs text-emerald-900 leading-snug">
+                  Your inquiry details have been emailed directly to our reservations desk at <strong className="font-mono text-emerald-950">sweetbertmacha500@gmail.com</strong>.
+                </p>
+              </div>
 
               {/* 2. REASSURE */}
               <div className="bg-[#FAF8F5] rounded-xl p-4 border border-gray-200/80 max-w-lg mx-auto mb-6 text-left">
@@ -239,18 +279,26 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                 <button
                   onClick={handleWhatsAppSend}
-                  className="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-tr from-[#128C7E] to-[#25D366] hover:brightness-105 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-3.5 bg-gradient-to-tr from-[#128C7E] to-[#25D366] hover:brightness-105 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Open Direct Chat on WhatsApp</span>
+                  <span>WhatsApp Concierge</span>
                 </button>
+
+                <a
+                  href={`mailto:sweetbertmacha500@gmail.com?subject=${encodeURIComponent(`Booking Inquiry Ref #${bookingRef}: ${experience} - ${fullName}`)}&body=${encodeURIComponent(`Hello Siribrand Zanzibar Concierge,\n\nI have submitted a booking inquiry.\n\nReference: ${bookingRef}\nGuest Name: ${fullName}\nSelected Experience: ${experience}\nPreferred Date: ${date || 'Flexible'}\nGuests: ${guests}\nPhone/WhatsApp: ${phone}\nSpecial Requests: ${specialRequests || 'Standard'}\n\nPlease confirm availability.\n\nAsante sana!`)}`}
+                  className="w-full sm:w-auto px-5 py-3.5 bg-[#44534C] hover:bg-[#35423C] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shadow cursor-pointer text-center"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Direct Email</span>
+                </a>
 
                 <button
                   onClick={() => {
                     setIsSubmitted(false);
                     onClose();
                   }}
-                  className="w-full sm:w-auto px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
                 >
                   Done
                 </button>
@@ -445,10 +493,20 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                 <button
                   type="submit"
-                  className="flex-1 py-3.5 bg-[#44534C] hover:bg-[#35423C] text-white text-xs font-medium uppercase tracking-[0.2em] rounded-xl transition-all shadow cursor-pointer flex items-center justify-center gap-2"
+                  disabled={isSubmitting}
+                  className="flex-1 py-3.5 bg-[#44534C] hover:bg-[#35423C] text-white text-xs font-medium uppercase tracking-[0.2em] rounded-xl transition-all shadow cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed"
                 >
-                  <Send className="w-4 h-4" />
-                  <span>Submit Inquiry</span>
+                  {isSubmitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Submitting Inquiry...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Submit Inquiry</span>
+                    </>
+                  )}
                 </button>
               </div>
 

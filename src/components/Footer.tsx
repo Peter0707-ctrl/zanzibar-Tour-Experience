@@ -10,11 +10,29 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateJournal }) => {
   const [emailInput, setEmailInput] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (emailInput.trim()) {
-      setNewsletterSubscribed(true);
+    if (!emailInput.trim()) return;
+
+    try {
+      await fetch('https://formsubmit.co/ajax/sweetbertmacha500@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          _subject: 'New Zanzibar Travel Journal Subscriber',
+          subscriberEmail: emailInput.trim(),
+          submittedAt: new Date().toLocaleString(),
+          _template: 'box',
+        }),
+      });
+    } catch {
+      // Silently handle offline/network issues
     }
+
+    setNewsletterSubscribed(true);
   };
 
   return (
@@ -146,8 +164,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateJournal }) => {
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#F5D08A] shrink-0" />
-                <a href="mailto:info@siribrandagency.click" className="hover:text-white transition-colors">
-                  info@siribrandagency.click
+                <a href="mailto:sweetbertmacha500@gmail.com" className="hover:text-white transition-colors">
+                  sweetbertmacha500@gmail.com
                 </a>
               </div>
             </div>
